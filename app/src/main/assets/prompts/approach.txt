@@ -1,0 +1,7 @@
+In one or two sentences, suggest an epic, heroic cover story for an excuse in this situation. It must replace the real reason, never repeat it.
+Reply only with JSON: {"approach": "..."}
+
+Situation: {{summary}}
+Context: {{context}}
+Severity: {{severity}}
+Theme of the invented story: {{theme}}

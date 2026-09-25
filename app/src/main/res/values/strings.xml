@@ -1,0 +1,89 @@
+<resources>
+    <string name="app_name">Excusa Legendaria</string>
+
+    <!-- Model setup -->
+    <string name="setup_title">Preparando tu cerebro local</string>
+    <string name="setup_downloading">Descargando el cerebro local (2.6 GB). Hazlo con Wi‑Fi.</string>
+    <string name="setup_progress">%1$d MB de %2$d MB</string>
+    <string name="setup_cancel">Cancelar</string>
+    <string name="setup_download">Descargar modelo</string>
+    <string name="setup_not_downloaded">El cerebro local (Gemma, 2.6 GB) todavía no está en tu teléfono. Sin él la app no puede funcionar.</string>
+    <string name="setup_initializing">Preparando cerebro local…</string>
+    <string name="setup_failed">No se pudo preparar el cerebro local: %1$s</string>
+    <string name="setup_retry">Reintentar</string>
+    <string name="setup_no_space">No hay espacio suficiente. Libera %1$d MB e intenta de nuevo.</string>
+
+    <!-- Main screen -->
+    <string name="online">En línea</string>
+    <string name="offline">Sin conexión</string>
+    <string name="settings">Configuración</string>
+    <string name="input_placeholder">¿Qué pasó en realidad? Cuéntalo con nombres y detalles</string>
+    <string name="subtitle">Cuenta la verdad. Recibe una leyenda.</string>
+    <string name="examples_title">¿Sin ideas? Prueba un ejemplo</string>
+    <string name="example_minor_label">Leve</string>
+    <string name="example_moderate_label">Moderada</string>
+    <string name="example_severe_label">Grave</string>
+    <string name="example_minor">Llegué 5 minutos tarde al café con mi amigo Pablo porque me quedé viendo memes.</string>
+    <string name="example_moderate">No entregué el trabajo en equipo de la clase del profesor Ramírez en la Universidad Galileo porque se me olvidó por jugar videojuegos.</string>
+    <string name="example_severe">Me quedé dormido viendo series hasta las 4 am y no llegué a la junta con mi jefa Laura en Oficinas Norte.</string>
+    <string name="tone_title">Tono</string>
+    <string name="generate">✨ Generar excusa</string>
+    <string name="cancel">Cancelar</string>
+
+    <!-- Tones -->
+    <string name="tone_auto">Automático</string>
+    <string name="tone_formal">Formal</string>
+    <string name="tone_dramatic">Dramático</string>
+    <string name="tone_absurd">Absurdo</string>
+    <string name="tone_short_auto">Auto</string>
+    <string name="tone_short_formal">Formal</string>
+    <string name="tone_short_dramatic">Drama</string>
+    <string name="tone_short_absurd">Absurdo</string>
+
+    <!-- Progress messages: who is working on what -->
+    <string name="progress_anonymize">📱 Ocultando nombres en tu teléfono…</string>
+    <string name="progress_leak_check">⚙️ Verificando que nada privado se escape…</string>
+    <string name="progress_summarize">📱 Resumiendo tu historia…</string>
+    <string name="progress_severity">📱 Midiendo la gravedad del desastre…</string>
+    <string name="progress_style">📱 Eligiendo el tono perfecto…</string>
+    <string name="progress_prompt">📱 Planeando la estrategia…</string>
+    <string name="progress_generate_local">📱 Gemma está escribiendo tu leyenda…</string>
+    <string name="progress_generate_cloud">☁️ Gemini está escribiendo tu leyenda…</string>
+    <string name="progress_review">📱 Gemma revisa la excusa de Gemini…</string>
+    <string name="progress_deanonymize">⚙️ Devolviendo los nombres reales…</string>
+
+
+
+
+
+    <!-- Result -->
+    <string name="generated_by_local">📱 Escrita en tu teléfono por Gemma</string>
+    <string name="generated_by_cloud">☁️ Escrita en la nube por Gemini</string>
+    <string name="reviewer_warning">El revisor local no quedó convencido</string>
+    <string name="notice_anonymization_failed">No se pudo anonimizar tu historia: por seguridad no se envió nada a la nube.</string>
+    <string name="notice_offline">Sin conexión: excusa generada en el teléfono</string>
+    <string name="notice_cloud_error">La nube falló (%1$s). Se generó la excusa en el teléfono.</string>
+    <string name="copy">Copiar</string>
+    <string name="share">Compartir</string>
+    <string name="another">🎲 Otra excusa</string>
+    <string name="copied">Excusa copiada</string>
+    <string name="error_generic">Algo salió mal: %1$s</string>
+
+    <!-- Settings -->
+    <string name="back">Volver</string>
+    <string name="settings_default_tone">Tono por defecto</string>
+    <string name="settings_routing">¿Quién escribe la excusa?</string>
+    <string name="routing_auto">Automático (según la gravedad)</string>
+    <string name="routing_force_local">Forzar local (Gemma)</string>
+    <string name="routing_force_cloud">Forzar Gemini</string>
+    <string name="settings_model">Modelo local</string>
+    <string name="settings_model_info">%1$s · %2$d MB · backend %3$s</string>
+    <string name="settings_delete_model">Borrar y volver a descargar</string>
+
+    <!-- Generic words for unknown placeholders (used by the de-anonymizer) -->
+    <string name="generic_person">alguien</string>
+    <string name="generic_place">un lugar</string>
+    <string name="generic_company">una empresa</string>
+    <string name="generic_date">ese día</string>
+    <string name="generic_other">algo</string>
+</resources>

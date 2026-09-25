@@ -1,0 +1,4 @@
+Summarize the following story in at most 60 words. Keep the important facts and every placeholder in brackets. Keep the original language.
+Reply only with JSON: {"summary": "..."}
+
+Story: {{anonymized_text}}

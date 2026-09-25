@@ -1,0 +1,6 @@
+Replace every name of a person, place, company or school, and every specific date in the text, with placeholders: [PERSON_1], [PLACE_1], [COMPANY_1], [DATE_1], numbered in order of appearance.
+Do not change anything else. Keep the original language.
+Reply only with JSON:
+{"text": "...", "map": {"[PERSON_1]": "original value"}}
+
+Text: {{story}}

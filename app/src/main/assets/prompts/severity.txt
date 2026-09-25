@@ -1,0 +1,7 @@
+Classify how serious the consequences of this situation are:
+- minor: minimal consequences.
+- moderate: affects other people, school or work.
+- severe: serious consequences or an important occasion.
+Reply only with JSON: {"severity": "minor|moderate|severe", "reason": "..."}
+
+Situation: {{summary}}

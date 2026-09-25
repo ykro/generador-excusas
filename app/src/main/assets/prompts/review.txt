@@ -1,0 +1,11 @@
+You review excuses. The excuse is SUPPOSED to be an invented, epic and exaggerated story that hides the real reason. Fantasy, heroism and drama are good, not a problem.
+Reject it ONLY if:
+- it reveals the real embarrassing reason from the situation, or
+- it changes who was affected or what was missed, or
+- it replaces placeholders like [PERSON_1] with invented names.
+Otherwise approve it.
+Reply only with JSON: {"approved": true|false, "reason": "..."}
+
+Situation: {{summary}}
+Context: {{context}}
+Excuse: {{excuse}}

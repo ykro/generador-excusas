@@ -1,0 +1,6 @@
+Identify the context of the situation and the most suitable tone for an excuse.
+context: work, school, partner, friends, family or other.
+tone: formal, dramatic or absurd.
+Reply only with JSON: {"context": "...", "tone": "..."}
+
+Situation: {{summary}}
