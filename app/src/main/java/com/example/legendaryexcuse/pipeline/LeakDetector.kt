@@ -17,15 +17,16 @@ object LeakDetector {
 
   data class Result(val anonymization: Anonymization, val fixed: Boolean)
 
+  private fun wholeWord(value: String) =
+    Regex("""(?<![\p{L}\p{N}])${Regex.escape(value)}(?![\p{L}\p{N}])""", RegexOption.IGNORE_CASE)
+
   fun check(input: Anonymization): Result {
     var text = input.text
     val map = input.map.toMutableMap()
 
-    // 1. Real values the model forgot to replace.
+    // 1. Real values the model forgot to replace. Whole words only: a short name like "Ana" must not match inside "mañana".
     for ((placeholder, realValue) in input.map) {
-      if (realValue.isNotBlank() && text.contains(realValue, ignoreCase = true)) {
-        text = text.replace(realValue, placeholder, ignoreCase = true)
-      }
+      if (realValue.isNotBlank()) text = wholeWord(realValue).replace(text) { placeholder }
     }
 
     // 2. Sensitive patterns.

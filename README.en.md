@@ -4,21 +4,35 @@
 
 You tell the app the real, embarrassing reason you were late or missed something ("I overslept binge-watching series and missed the meeting with my boss Laura at Oficinas Norte"). It gives you back an **epic** excuse, ready to send.
 
-The real goal of the project is to show the **split brain** architecture: a **small model on the phone** (Gemma 4 E2B via LiteRT-LM) and a **big model in the cloud** (Gemini via Firebase AI Logic) split the work. Plain **deterministic code** handles the parts that must be 100% reliable. The app orchestrates both models with **ADK for Kotlin**.
-
-| Why split? | How |
-| --- | --- |
-| **Privacy** | The real story never leaves the phone. Gemini only receives an anonymized summary. |
-| **Cost** | Minor situations are solved on-device, without calling the API. |
-| **Quality** | Gemini writes the creative excuse when it is worth it, and the local model reviews it. |
-| **Availability** | Without internet the app still works, using only the local model. |
-| **Latency** | Whatever a rule can solve waits for no model, and without real internet the app doesn't even try to call Gemini. |
+The real goal of the project is to show the **split brain** architecture.
 
 UI text is in Spanish (`res/values/strings.xml`). Code, prompts and docs are in English.
 
 ## Split brain in a nutshell
 
-**What it is.** An AI app splits the work between a model on the device and one in the cloud, each doing what it does best, and leaves to code whatever can't afford mistakes. In distributed systems, *split brain* means something else (a cluster that splits in two, with each half making contradictory decisions); here it is used in the AI-apps sense.
+**What it is.** An AI app splits the work between a small model on the device and a big one in the cloud, each doing what it does best, and leaves to code whatever can't afford mistakes. In distributed systems, *split brain* means something else (a cluster that splits in two, with each half making contradictory decisions); here it is used in the AI-apps sense.
+
+**Vocabulary.** To *anonymize* is to replace names, places and dates with *placeholders* like `[PERSON_1]`. The map that says `[PERSON_1]` is Laura stays on the phone. A *leak* is a real value that slips into what goes to the cloud.
+
+**The three brains.** There are three kinds of work, and each has different properties:
+
+| Brain | Understands language | Makes mistakes | Cost | Offline | Your data |
+| --- | --- | --- | --- | --- | --- |
+| **Code** | No | No, if written correctly | Free and instant | Yes | Stays |
+| **Local model** (Gemma) | Yes, on short tasks | Sometimes | Free, but slow on CPU | Yes | Stays |
+| **Cloud model** (Gemini) | Yes, the best | Less | Paid per call | No | Leaves |
+
+The usual definition of split brain talks about two: device and cloud. Counting code as a third brain forces it to own responsibilities (detecting leaks, choosing the route, counting words, restoring names) instead of being the glue between the models. That way, whatever can't afford mistakes never depends on a model.
+
+**Why split.**
+
+| Reason | In this app |
+| --- | --- |
+| **Privacy** | The real story never leaves the phone. Gemini only receives the anonymized story, summarized when it is long. |
+| **Cost** | Minor situations are solved on-device, without calling the API. |
+| **Quality** | Gemini writes the creative excuse when it is worth it, and the local model reviews it. |
+| **Availability** | Without internet the app still works, using only the local model. |
+| **Latency** | Whatever a rule can solve waits for no model, and without real internet the app doesn't even try to call Gemini. |
 
 **How to decide what goes where.** For each step, three questions, in this order:
 
@@ -26,9 +40,16 @@ UI text is in Spanish (`res/values/strings.xml`). Code, prompts and docs are in 
 2. **Does it touch sensitive data, or is it classifying, extracting or reviewing?** Then the local model. These are short, focused tasks, exactly where a small model does well.
 3. **Does it need creativity, broad knowledge or long reasoning?** Then the cloud, with the local model as a fallback when there is no connection or the call fails.
 
-The decision about which data crosses to the cloud lives in code, with tests.
+When a step hits both 2 and 3, like writing the excuse (the story is private, but the excuse needs creativity), the way out is to **anonymize first**: the local model removes the sensitive data, the step stops being sensitive and can go to the cloud. And since the cloud costs money, it is only used when it is worth it: here, the severity of the situation decides. The decision about which data crosses to the cloud lives in code, with tests.
 
 **When it doesn't pay off.** The local model is a 2.6 GB download and needs memory; without a GPU it runs on the CPU and is slow; two models are two ways to fail, each with its fallback and tests; and not every phone can run it. If your data isn't sensitive, your app is always online and API cost doesn't worry you, a single cloud model is probably enough.
+
+**The pieces.**
+
+- **Gemma 4 E2B:** Google's open model for phones, with about 2B *effective* parameters. It ships as a 2.6 GB `.litertlm` file.
+- **LiteRT-LM:** Google's runtime that runs the model on the phone, on CPU or GPU.
+- **Firebase AI Logic:** Firebase's SDK to call Gemini from the app, with no backend of your own. App Check protects it.
+- **ADK for Kotlin:** Google's agent framework. An agent (`LlmAgent`) is a model plus an instruction, and ADK runs it the same way whether the model lives on the phone or in the cloud.
 
 ## What it looks like
 
@@ -47,7 +68,7 @@ The decision about which data crosses to the cloud lives in code, with tests.
 | Step | Brain | Why there |
 | --- | --- | --- |
 | 1. Anonymize | Local | The real story must never leave the phone |
-| Leak check | Code | Never trust the small model blindly |
+| Leak check | Code | If Gemma forgot a name or a value, it is fixed before leaving |
 | 2. Summarize | Local | Fewer tokens sent = lower cost and less exposure |
 | 3. Severity | Local | Decides whether paying for the API is worth it |
 | 4. Style | Local | Simple classification, ideal for a small model |
@@ -61,7 +82,7 @@ The decision about which data crosses to the cloud lives in code, with tests.
 
 ![The layers of the app](docs/diagrams/layers.en.png)
 
-The orchestration is **not** an agent. The order of the steps, the routing and the retries are ordinary `if`/`when` in Kotlin, so the decision about what may leave the phone stays explicit, deterministic and testable.
+ADK lets an orchestrator agent, that is, a model, decide which steps to run. It isn't used here: the order of the steps, the routing and the retries are ordinary `if`/`when` in Kotlin, so the decision about what may leave the phone stays explicit, deterministic and testable.
 
 ### Heuristics: when a rule is enough
 
@@ -73,7 +94,7 @@ Not everything local is a model. These rules do work that a model would do worse
 | Minor, offline or failed anonymization: Gemma writes | `ExcusePipeline.kt` | What leaves the phone and when paying for the API is worth it |
 | Regex for e-mails, phone numbers and long numbers | `LeakDetector.kt` | Data with a recognizable shape, without relying on the model |
 | More than 120 words: excuse rejected | `ExcusePipeline.kt` | Small models can't count words |
-| Random theme, never the same as last time | `ExcusePipeline.kt`, `themes.txt` | Variety, because temperature never reaches Gemma |
+| Random theme, never the same as last time | `ExcusePipeline.kt`, `themes.txt` | Variety: ADK 1.1.0 doesn't pass temperature, the parameter that controls how varied the answer is, to Gemma |
 | Invalid JSON: one retry, then a default value | `ExcusePipeline.kt`, `JsonParsing.kt` | A malformed answer doesn't break the pipeline |
 | Emulator, or a GPU that crashed the app before: CPU is used | `GemmaLocalBrain.kt` | Avoids a native crash no `try/catch` can catch |
 | Network not validated by Android: Gemini isn't even tried | `Connectivity.kt` | No waiting for a timeout when there is no real internet |
@@ -103,6 +124,38 @@ val useCloud = wantsCloud && isOnline && !anonymizationFailed
 - If Gemini fails (network error, timeout, App Check, quota), the pipeline catches it and **falls back to Gemma**.
 - `Deanonymizer.restore(...)` puts the real names back **on the phone**, after the cloud is done.
 
+### How each step fails
+
+Every model step can fail, and which way it fails is a design decision: where privacy is at stake, it fails safe; where only quality is at stake, it fails permissive.
+
+| If this fails… | What the pipeline does | Why |
+| --- | --- | --- |
+| Anonymize | Doesn't call the cloud: Gemma writes on the phone | Without the names hidden, nothing may leave |
+| Severity | Assumes `moderate`, so it goes to the cloud | You lose on cost, not on privacy |
+| Style | Context `other`, tone `dramatic` | An excuse in another tone still works |
+| Approach | Stays empty and the template goes on | The random theme already gives a direction |
+| Review | Approves the excuse | Only quality is at stake, and it beats an endless loop |
+| Gemini (network, timeout, App Check or quota) | Gemma writes on the phone | The person always gets their excuse |
+
+### Other rules the code keeps
+
+- **Everything that crosses to the cloud comes from the anonymized text.** The local steps, the reviewer and the template work with placeholders; the real names only come back at the end. That is why the reason Gemma gives for rejecting an excuse can be sent to Gemini on the retry without leaking anything.
+- **The local model returns data, not decisions.** It answers in JSON, and code turns it into fixed values (`Severity`, `Tone`) with `JsonParsing.enumOrNull`. Code decides with those values.
+- **There is a record of what left.** The pipeline stores every text sent to the cloud, retry included, in `textSentToCloud`, and the tests assert on it (for example, that it doesn't contain "Laura").
+- **A timeout is not a cancellation.** `withTimeout(20_000)` throws `TimeoutCancellationException`, which in Kotlin is a kind of `CancellationException`. `runCatchingCloud` catches the timeout to fall back to Gemma, but lets a real cancellation (the Cancel button) through. A plain `runCatching` would swallow both.
+
+  ```kotlin
+  private suspend fun <T> runCatchingCloud(block: suspend () -> T): Result<T> = try {
+    Result.success(block())
+  } catch (e: TimeoutCancellationException) {
+    Result.failure(e)   // timeout: fall back to Gemma
+  } catch (e: CancellationException) {
+    throw e             // the user cancelled: stop
+  } catch (e: Exception) {
+    Result.failure(e)
+  }
+  ```
+
 ### In the app
 
 - **While it works**, a progress card says which brain is busy: `Gemma oculta los nombres en tu teléfono…`, `Verificando que nada privado se escape…`, `Gemini escribe tu leyenda en la nube…`, `Gemma revisa la excusa de Gemini…`. When Gemma writes locally, you see the text stream in.
@@ -120,7 +173,7 @@ val useCloud = wantsCloud && isOnline && !anonymizationFailed
 [`GemmaLocalBrain.kt`](app/src/main/java/com/example/legendaryexcuse/brains/GemmaLocalBrain.kt): open **one** LiteRT-LM engine, wrap it as an ADK model, and give it to an `LlmAgent`.
 
 ```kotlin
-// 1. Load Gemma 4 E2B (.litertlm) once. GPU first, CPU as fallback. Slow: do it off the main thread.
+// 1. Load Gemma 4 E2B (.litertlm) once, off the main thread. CPU here; on a real phone the app tries Backend.GPU() first.
 val engine = Engine(EngineConfig(modelPath = modelFile.absolutePath, backend = Backend.CPU(), cacheDir = cacheDir.absolutePath))
 engine.initialize()
 
@@ -196,7 +249,7 @@ Notice that the local call and the cloud call look the same: **same ADK agent AP
 
 ## 5. Privacy: what leaves the phone
 
-- **Leaves the phone:** only the filled `base_template.txt`. It contains the anonymized summary with placeholders (`[PERSON_1]`, `[PLACE_1]`), plus context, severity, tone, approach and theme. Nothing else.
+- **Leaves the phone:** only the filled `base_template.txt`. It contains the anonymized story (summarized when long) with placeholders (`[PERSON_1]`, `[PLACE_1]`), plus context, severity, tone, approach and theme. Nothing else.
 - **Never leaves the phone:** the original story and the placeholder → real value map. They live only in memory: they are never written to disk and never logged.
 - **When nothing is sent:** if anonymization fails, the pipeline refuses to call the cloud and generates locally.
 - **Unit tests enforce this:** `severeStoryGoesToGeminiWithoutRealNames`, `failedAnonymizationNeverReachesTheCloud` and `leakIsFixedByCodeBeforeLeavingThePhone`.
@@ -232,7 +285,7 @@ The map that says `[PERSON_1]` is Laura stays on the phone.
 
 The small model makes mistakes, so its anonymization is never accepted without checking it. [`LeakDetector.kt`](app/src/main/java/com/example/legendaryexcuse/pipeline/LeakDetector.kt) is plain code, no model, and runs after Gemma anonymizes and **before** any text can leave the phone. It does two checks:
 
-1. **Real values Gemma forgot to replace.** It uses the same map Gemma returned: if a real value is still in the text, it swaps it for its placeholder. The typical case is a name that appears twice and the model replaced only one:
+1. **Real values Gemma forgot to replace.** It uses the same map Gemma returned: if a real value is still in the text, it swaps it for its placeholder. It only replaces whole words; otherwise a short name like "Ana" would match inside "mañana". The typical case is a name that appears twice and the model replaced only one:
 
    ```text
    Gemma returns:      "No llegué a la junta con mi jefa Laura en [PLACE_1]"
@@ -335,7 +388,7 @@ If the file is already there with the right size, the app skips the download.
 ### Run
 
 ```bash
-./gradlew testDebugUnitTest     # 31 unit tests: pipeline with fake brains, leak detector, de-anonymizer, prompts, JSON
+./gradlew testDebugUnitTest     # 32 unit tests: pipeline with fake brains, leak detector, de-anonymizer, prompts, JSON
 ./gradlew installDebug
 ```
 

@@ -21,6 +21,12 @@ class LeakDetectorTest {
     assertEquals("Vi a [PERSON_1] y a [PERSON_1]", result.anonymization.text)
   }
 
+  @Test fun replacesWholeWordsOnly() {
+    val input = Anonymization("Mañana veo a Ana", mapOf("[PERSON_1]" to "Ana"))
+    val result = LeakDetector.check(input)
+    assertEquals("Mañana veo a [PERSON_1]", result.anonymization.text)
+  }
+
   @Test fun redactsEmailPhoneAndLongNumbers() {
     val input = Anonymization("Escribe a ana@mail.com o al +502 5555-1234, cuenta 12345678", emptyMap())
     val result = LeakDetector.check(input)

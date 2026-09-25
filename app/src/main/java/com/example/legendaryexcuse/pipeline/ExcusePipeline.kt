@@ -111,7 +111,7 @@ class ExcusePipeline(
     val baseNotice = if (anonymizationFailed) Notice.ANONYMIZATION_FAILED else offlineNotice
 
     if (useCloud) {
-      val sent = mutableListOf<String>() // everything that left the phone (shown in the "what did the cloud see" panel)
+      val sent = mutableListOf<String>() // everything that left the phone, so tests can assert on it
       val cloudResult = runCatchingCloud { generateInCloud(analysis, prompt, sent, onStep) }
       if (cloudResult.isSuccess) {
         val (excuse, warning) = cloudResult.getOrThrow()
