@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Qué corre en el teléfono y qué en la nube</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Geist', sans-serif; background: #FBFAFE; color: #1F1A33; padding: 3rem 2rem; display: flex; justify-content: center; }
+  .frame { max-width: 1100px; width: 100%; }
+  .eyebrow { font-family: 'Geist Mono', monospace; font-size: .66rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: #4F4A66; margin-bottom: .5rem; }
+  h1 { font-family: 'Instrument Serif', serif; font-size: 2rem; font-weight: 400; letter-spacing: -.02em; margin-bottom: 1.5rem; }
+  svg { width: 100%; min-width: 900px; display: block; }
+</style>
+</head>
+<body>
+<div class="frame">
+<p class="eyebrow">Arquitectura · split brain</p>
+<h1>Qué corre en el teléfono y qué en la nube</h1>
+<svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="split-brain-es-title split-brain-es-desc">
+<title id="split-brain-es-title">Qué corre en el teléfono y qué en la nube</title>
+<desc id="split-brain-es-desc">Diagrama de arquitectura: Gemma y el código procesan la historia real dentro del teléfono; a Gemini solo llega un resumen anonimizado y los nombres reales se restauran en el teléfono.</desc>
+<defs>
+  <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4F4A66"/></marker>
+  <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#5B3CC4"/></marker>
+  <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#B7791F"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#FBFAFE"/>
+<rect x="24" y="64" width="680" height="352" rx="8" fill="rgba(91,60,196,0.03)" stroke="#5B3CC4" stroke-opacity="0.55" stroke-width="1" stroke-dasharray="4,4"/><rect x="40" y="58" width="184" height="12" rx="2" fill="#FBFAFE"/><text x="132.0" y="67" fill="#5B3CC4" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">EL TELÉFONO · DATOS PRIVADOS</text>
+<rect x="752" y="64" width="224" height="352" rx="8" fill="rgba(183,121,31,0.03)" stroke="#B7791F" stroke-opacity="0.35" stroke-width="0.8"/><rect x="768" y="58" width="58" height="12" rx="2" fill="#FBFAFE"/><text x="797.0" y="67" fill="#B7791F" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">LA NUBE</text>
+<path d="M 176,144 H 248" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="178.0" y="124" width="68.0" height="12" rx="2" fill="#FBFAFE"/><text x="212.0" y="133" fill="#4F4A66" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">TEXTO REAL</text>
+<path d="M 424,144 H 496" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="423.2" y="124" width="73.6" height="12" rx="2" fill="#FBFAFE"/><text x="460.0" y="133" fill="#4F4A66" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">ANONIMIZADO</text>
+<path d="M 656,144 H 792" fill="none" stroke="#B7791F" stroke-width="1.5" marker-end="url(#arrow-link)"/>
+<rect x="676.0" y="124" width="96.0" height="12" rx="2" fill="#FBFAFE"/><text x="724.0" y="133" fill="#B7791F" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">SOLO EL RESUMEN</text>
+<path d="M 336,176 V 224" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="346" y="194" width="68.0" height="12" rx="2" fill="#FBFAFE"/><text x="380.0" y="203" fill="#4F4A66" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">NUNCA SALE</text>
+<path d="M 336,288 V 336" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M 872,176 V 360 Q 872,368 864,368 H 424" fill="none" stroke="#B7791F" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow-link)"/>
+<rect x="555.2" y="348" width="129.6" height="12" rx="2" fill="#FBFAFE"/><text x="620.0" y="357" fill="#B7791F" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">EXCUSA CON [PERSON_1]</text>
+<path d="M 256,368 H 176" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="40" y="112" width="136" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="40" y="112" width="136" height="64" rx="6" fill="rgba(79,74,102,0.10)" stroke="#7C7794" stroke-width="1"/>
+<rect x="48" y="119" width="51.199999999999996" height="13" rx="2" fill="none" stroke="#7C7794" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="73.6" y="128.5" fill="#7C7794" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">USUARIO</text>
+<text x="108.0" y="150.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Historia real</text>
+<text x="108.0" y="166.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">nombres y detalles</text>
+<rect x="248" y="112" width="176" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="248" y="112" width="176" height="64" rx="6" fill="rgba(91,60,196,0.08)" stroke="#5B3CC4" stroke-width="1"/>
+<rect x="256" y="119" width="40.0" height="13" rx="2" fill="none" stroke="#5B3CC4" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="276.0" y="128.5" fill="#5B3CC4" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LOCAL</text>
+<text x="336.0" y="150.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Gemma 4 E2B</text>
+<text x="336.0" y="166.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">anonimiza · decide · revisa</text>
+<rect x="496" y="112" width="160" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="496" y="112" width="160" height="64" rx="6" fill="#ffffff" stroke="#1F1A33" stroke-width="1"/>
+<rect x="504" y="119" width="45.599999999999994" height="13" rx="2" fill="none" stroke="#1F1A33" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="526.8" y="128.5" fill="#1F1A33" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CÓDIGO</text>
+<text x="576.0" y="150.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Revisión de fugas</text>
+<text x="576.0" y="166.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">LeakDetector</text>
+<rect x="792" y="112" width="160" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="792" y="112" width="160" height="64" rx="6" fill="rgba(183,121,31,0.06)" stroke="#B7791F" stroke-width="1"/>
+<rect x="800" y="119" width="34.4" height="13" rx="2" fill="none" stroke="#B7791F" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="817.2" y="128.5" fill="#B7791F" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">NUBE</text>
+<text x="872.0" y="150.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Gemini</text>
+<text x="872.0" y="166.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">gemini-3.8-flash</text>
+<rect x="248" y="224" width="176" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="248" y="224" width="176" height="64" rx="6" fill="rgba(31,26,51,0.05)" stroke="#4F4A66" stroke-width="1"/>
+<rect x="256" y="231" width="51.199999999999996" height="13" rx="2" fill="none" stroke="#4F4A66" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="281.6" y="240.5" fill="#4F4A66" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">MEMORIA</text>
+<text x="336.0" y="262.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Mapa de nombres</text>
+<text x="336.0" y="278.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">[PERSON_1] → Laura</text>
+<rect x="248" y="336" width="176" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="248" y="336" width="176" height="64" rx="6" fill="#ffffff" stroke="#1F1A33" stroke-width="1"/>
+<rect x="256" y="343" width="45.599999999999994" height="13" rx="2" fill="none" stroke="#1F1A33" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="278.8" y="352.5" fill="#1F1A33" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CÓDIGO</text>
+<text x="336.0" y="374.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Restaurar nombres</text>
+<text x="336.0" y="390.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">Deanonymizer</text>
+<rect x="40" y="336" width="136" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="40" y="336" width="136" height="64" rx="6" fill="rgba(79,74,102,0.10)" stroke="#7C7794" stroke-width="1"/>
+<rect x="48" y="343" width="62.4" height="13" rx="2" fill="none" stroke="#7C7794" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="79.2" y="352.5" fill="#7C7794" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">RESULTADO</text>
+<text x="108.0" y="374.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Excusa épica</text>
+<text x="108.0" y="390.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">con nombres reales</text>
+<line x1="40" y1="440" x2="960" y2="440" stroke="rgba(31,26,51,0.12)" stroke-width="0.8"/>
+<rect x="40" y="458" width="16" height="11" rx="2" fill="rgba(91,60,196,0.08)" stroke="#5B3CC4" stroke-width="1"/>
+<text x="62" y="467" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Modelo local</text>
+<rect x="157.2" y="458" width="16" height="11" rx="2" fill="#ffffff" stroke="#1F1A33" stroke-width="1"/>
+<text x="179.2" y="467" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Código determinista</text>
+<rect x="313.59999999999997" y="458" width="16" height="11" rx="2" fill="rgba(31,26,51,0.05)" stroke="#4F4A66" stroke-width="1"/>
+<text x="335.59999999999997" y="467" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Memoria del teléfono</text>
+<rect x="475.59999999999997" y="458" width="16" height="11" rx="2" fill="rgba(183,121,31,0.06)" stroke="#B7791F" stroke-width="1"/>
+<text x="497.59999999999997" y="467" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Nube</text>
+<rect x="548.0" y="458" width="16" height="11" rx="2" fill="rgba(91,60,196,0.03)" stroke="#5B3CC4" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="570.0" y="467" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Límite de privacidad</text>
+<path d="M 710.0,463.5 H 738.0" fill="none" stroke="#B7791F" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<text x="746.0" y="467" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Viaja a la nube</text>
+</svg>
+</div>
+</body>
+</html>

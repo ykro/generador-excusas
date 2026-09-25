@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>El pipeline: cada paso tiene su cerebro</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Geist', sans-serif; background: #FBFAFE; color: #1F1A33; padding: 3rem 2rem; display: flex; justify-content: center; }
+  .frame { max-width: 1100px; width: 100%; }
+  .eyebrow { font-family: 'Geist Mono', monospace; font-size: .66rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: #4F4A66; margin-bottom: .5rem; }
+  h1 { font-family: 'Instrument Serif', serif; font-size: 2rem; font-weight: 400; letter-spacing: -.02em; margin-bottom: 1.5rem; }
+  svg { width: 100%; min-width: 900px; display: block; }
+</style>
+</head>
+<body>
+<div class="frame">
+<p class="eyebrow">Flowchart · pipeline</p>
+<h1>El pipeline: cada paso tiene su cerebro</h1>
+<svg viewBox="0 0 1000 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="pipeline-es-title pipeline-es-desc">
+<title id="pipeline-es-title">El pipeline: cada paso tiene su cerebro</title>
+<desc id="pipeline-es-desc">Diagrama de flujo del pipeline: anonimizar, revisar fugas y analizar en local; si es leve o no hay internet escribe Gemma, si no escribe Gemini y Gemma revisa; al final se restauran los nombres.</desc>
+<defs>
+  <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4F4A66"/></marker>
+  <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#5B3CC4"/></marker>
+  <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#B7791F"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#FBFAFE"/>
+<path d="M 16,96 H 112" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="21.6" y="76" width="84.8" height="12" rx="2" fill="#FBFAFE"/><text x="64.0" y="85" fill="#4F4A66" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HISTORIA REAL</text>
+<path d="M 256,96 H 296" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M 440,96 H 480" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M 640,96 H 672" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M 784,96 H 832" fill="none" stroke="#B7791F" stroke-width="1.5" marker-end="url(#arrow-link)"/>
+<rect x="796.4" y="76" width="23.2" height="12" rx="2" fill="#FBFAFE"/><text x="808.0" y="85" fill="#B7791F" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">NO</text>
+<path d="M 728,140 V 224" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="736" y="176" width="23.2" height="12" rx="2" fill="#FBFAFE"/><text x="747.6" y="185" fill="#4F4A66" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">SÍ</text>
+<path d="M 880,128 V 224" fill="none" stroke="#B7791F" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<rect x="826.4" y="170" width="45.599999999999994" height="12" rx="2" fill="#FBFAFE"/><text x="849.1999999999999" y="179" fill="#4F4A66" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">EXCUSA</text>
+<path d="M 928,224 V 128" fill="none" stroke="#4F4A66" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+<rect x="936" y="170" width="51.199999999999996" height="12" rx="2" fill="#FBFAFE"/><text x="961.6" y="179" fill="#4F4A66" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">RECHAZO</text>
+<path d="M 728,288 V 384" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M 904,288 V 408 Q 904,416 896,416 H 800" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="823.6" y="396" width="56.8" height="12" rx="2" fill="#FBFAFE"/><text x="852.0" y="405" fill="#4F4A66" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">APROBADA</text>
+<path d="M 656,416 H 560" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<rect x="112" y="64" width="144" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="112" y="64" width="144" height="64" rx="6" fill="#ffffff" stroke="#1F1A33" stroke-width="1"/>
+<rect x="120" y="71" width="40.0" height="13" rx="2" fill="none" stroke="#1F1A33" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="140.0" y="80.5" fill="#1F1A33" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LOCAL</text>
+<text x="184.0" y="102.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">1 · Anonimizar</text>
+<text x="184.0" y="118.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">[PERSON_1] · [PLACE_1]</text>
+<rect x="296" y="64" width="144" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="296" y="64" width="144" height="64" rx="6" fill="rgba(31,26,51,0.05)" stroke="#4F4A66" stroke-width="1"/>
+<rect x="304" y="71" width="45.599999999999994" height="13" rx="2" fill="none" stroke="#4F4A66" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="326.8" y="80.5" fill="#4F4A66" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CÓDIGO</text>
+<text x="368.0" y="102.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Revisión de fugas</text>
+<text x="368.0" y="118.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">regex + mapa</text>
+<rect x="480" y="64" width="160" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="480" y="64" width="160" height="64" rx="6" fill="#ffffff" stroke="#1F1A33" stroke-width="1"/>
+<rect x="488" y="71" width="40.0" height="13" rx="2" fill="none" stroke="#1F1A33" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="508.0" y="80.5" fill="#1F1A33" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LOCAL</text>
+<text x="560.0" y="102.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">2–5 · Analizar</text>
+<text x="560.0" y="118.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">resumen · gravedad · tono</text>
+<polygon points="728,52 784,96 728,140 672,96" fill="#FBFAFE"/><polygon points="728,52 784,96 728,140 672,96" fill="rgba(91,60,196,0.08)" stroke="#5B3CC4" stroke-width="1.2"/><text x="728" y="93" fill="#1F1A33" font-size="11" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">¿Leve o</text><text x="728" y="107" fill="#1F1A33" font-size="11" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">sin internet?</text>
+<rect x="832" y="64" width="144" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="832" y="64" width="144" height="64" rx="6" fill="rgba(183,121,31,0.06)" stroke="#B7791F" stroke-width="1"/>
+<rect x="840" y="71" width="34.4" height="13" rx="2" fill="none" stroke="#B7791F" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="857.2" y="80.5" fill="#B7791F" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">NUBE</text>
+<text x="904.0" y="102.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">6b · Gemini escribe</text>
+<text x="904.0" y="118.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">Firebase AI Logic</text>
+<rect x="656" y="224" width="144" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="656" y="224" width="144" height="64" rx="6" fill="#ffffff" stroke="#1F1A33" stroke-width="1"/>
+<rect x="664" y="231" width="40.0" height="13" rx="2" fill="none" stroke="#1F1A33" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="684.0" y="240.5" fill="#1F1A33" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LOCAL</text>
+<text x="728.0" y="262.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">6a · Gemma escribe</text>
+<text x="728.0" y="278.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">gratis · sin conexión</text>
+<rect x="832" y="224" width="144" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="832" y="224" width="144" height="64" rx="6" fill="#ffffff" stroke="#1F1A33" stroke-width="1"/>
+<rect x="840" y="231" width="40.0" height="13" rx="2" fill="none" stroke="#1F1A33" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="860.0" y="240.5" fill="#1F1A33" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LOCAL</text>
+<text x="904.0" y="262.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">7 · Gemma revisa</text>
+<text x="904.0" y="278.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">máx. 1 reintento</text>
+<rect x="656" y="384" width="144" height="64" rx="6" fill="#FBFAFE"/>
+<rect x="656" y="384" width="144" height="64" rx="6" fill="rgba(31,26,51,0.05)" stroke="#4F4A66" stroke-width="1"/>
+<rect x="664" y="391" width="45.599999999999994" height="13" rx="2" fill="none" stroke="#4F4A66" stroke-opacity="0.45" stroke-width="0.8"/>
+<text x="686.8" y="400.5" fill="#4F4A66" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CÓDIGO</text>
+<text x="728.0" y="422.0" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">8 · Restaurar</text>
+<text x="728.0" y="438.0" fill="#4F4A66" font-size="9.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle">Deanonymizer</text>
+<rect x="424" y="392" width="136" height="48" rx="20" fill="#FBFAFE"/><rect x="424" y="392" width="136" height="48" rx="20" fill="rgba(79,74,102,0.10)" stroke="#7C7794" stroke-width="1"/><text x="492" y="420" fill="#1F1A33" font-size="13" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Excusa épica</text>
+<line x1="40" y1="472" x2="960" y2="472" stroke="rgba(31,26,51,0.12)" stroke-width="0.8"/>
+<rect x="40" y="490" width="16" height="11" rx="2" fill="#ffffff" stroke="#1F1A33" stroke-width="1"/>
+<text x="62" y="499" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Gemma (local)</text>
+<rect x="162.8" y="490" width="16" height="11" rx="2" fill="rgba(31,26,51,0.05)" stroke="#4F4A66" stroke-width="1"/>
+<text x="184.8" y="499" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Código determinista</text>
+<rect x="319.2" y="490" width="16" height="11" rx="2" fill="rgba(183,121,31,0.06)" stroke="#B7791F" stroke-width="1"/>
+<text x="341.2" y="499" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Nube</text>
+<polygon points="399.59999999999997,488 407.59999999999997,495.5 399.59999999999997,503 391.59999999999997,495.5" fill="rgba(91,60,196,0.08)" stroke="#5B3CC4" stroke-width="1"/>
+<text x="413.59999999999997" y="499" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Decisión de ruta</text>
+<path d="M 531.1999999999999,495.5 H 559.1999999999999" fill="none" stroke="#B7791F" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<text x="567.1999999999999" y="499" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Viaja a la nube</text>
+<path d="M 679.1999999999999,495.5 H 707.1999999999999" fill="none" stroke="#4F4A66" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+<text x="715.1999999999999" y="499" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist', sans-serif" text-anchor="start">Reintento</text>
+</svg>
+</div>
+</body>
+</html>

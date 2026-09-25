@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Las capas de la app</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Geist', sans-serif; background: #FBFAFE; color: #1F1A33; padding: 3rem 2rem; display: flex; justify-content: center; }
+  .frame { max-width: 1100px; width: 100%; }
+  .eyebrow { font-family: 'Geist Mono', monospace; font-size: .66rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: #4F4A66; margin-bottom: .5rem; }
+  h1 { font-family: 'Instrument Serif', serif; font-size: 2rem; font-weight: 400; letter-spacing: -.02em; margin-bottom: 1.5rem; }
+  svg { width: 100%; min-width: 900px; display: block; }
+</style>
+</head>
+<body>
+<div class="frame">
+<p class="eyebrow">Capas · arquitectura de la app</p>
+<h1>Las capas de la app</h1>
+<svg viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="layers-es-title layers-es-desc">
+<title id="layers-es-title">Las capas de la app</title>
+<desc id="layers-es-desc">Pila de seis capas: interfaz Compose, ViewModel, ExcusePipeline como orquestación, cerebros, ADK for Kotlin y los runtimes LiteRT-LM y Firebase AI Logic.</desc>
+<defs>
+  <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4F4A66"/></marker>
+  <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#5B3CC4"/></marker>
+  <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#B7791F"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#FBFAFE"/>
+<rect x="136" y="32" width="824" height="60" fill="#ffffff" stroke="rgba(31,26,51,0.12)" stroke-width="1"/>
+<text x="156" y="65.0" fill="#7C7794" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="start" letter-spacing="0.14em">INTERFAZ</text>
+<text x="306" y="67.0" fill="#1F1A33" font-size="15" font-weight="600" font-family="'Geist', sans-serif" text-anchor="start">Jetpack Compose</text>
+<text x="940" y="66.0" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="end">MainScreen · ModelSetupScreen · SettingsScreen</text>
+<rect x="136" y="92" width="824" height="60" fill="rgba(31,26,51,0.03)" stroke="rgba(31,26,51,0.12)" stroke-width="1"/>
+<text x="156" y="125.0" fill="#7C7794" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="start" letter-spacing="0.14em">ESTADO</text>
+<text x="306" y="127.0" fill="#1F1A33" font-size="15" font-weight="600" font-family="'Geist', sans-serif" text-anchor="start">ExcuseViewModel</text>
+<text x="940" y="126.0" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="end">StateFlow&lt;UiState&gt; · inyección manual</text>
+<rect x="136" y="152" width="824" height="60" fill="rgba(91,60,196,0.08)" stroke="rgba(31,26,51,0.12)" stroke-width="1"/>
+<text x="156" y="185.0" fill="#5B3CC4" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="start" letter-spacing="0.14em">ORQUESTACIÓN</text>
+<text x="306" y="187.0" fill="#1F1A33" font-size="15" font-weight="600" font-family="'Geist', sans-serif" text-anchor="start">ExcusePipeline</text>
+<text x="940" y="186.0" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="end">el split brain, en Kotlin simple</text>
+<rect x="136" y="212" width="824" height="60" fill="rgba(31,26,51,0.03)" stroke="rgba(31,26,51,0.12)" stroke-width="1"/>
+<text x="156" y="245.0" fill="#7C7794" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="start" letter-spacing="0.14em">CEREBROS</text>
+<text x="306" y="247.0" fill="#1F1A33" font-size="15" font-weight="600" font-family="'Geist', sans-serif" text-anchor="start">LocalBrain · CloudBrain · código</text>
+<text x="940" y="246.0" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="end">Gemma · Gemini · LeakDetector · Deanonymizer</text>
+<rect x="136" y="272" width="824" height="60" fill="#ffffff" stroke="rgba(31,26,51,0.12)" stroke-width="1"/>
+<text x="156" y="305.0" fill="#7C7794" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="start" letter-spacing="0.14em">AGENTES</text>
+<text x="306" y="307.0" fill="#1F1A33" font-size="15" font-weight="600" font-family="'Geist', sans-serif" text-anchor="start">ADK for Kotlin</text>
+<text x="940" y="306.0" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="end">LlmAgent · InMemoryRunner · sesión por paso</text>
+<rect x="136" y="332" width="824" height="60" fill="rgba(31,26,51,0.03)" stroke="rgba(31,26,51,0.12)" stroke-width="1"/>
+<text x="156" y="365.0" fill="#7C7794" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="start" letter-spacing="0.14em">MODELOS</text>
+<text x="306" y="367.0" fill="#1F1A33" font-size="15" font-weight="600" font-family="'Geist', sans-serif" text-anchor="start">LiteRT-LM · Firebase AI Logic</text>
+<text x="940" y="366.0" fill="#4F4A66" font-size="10" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="end">Gemma en el teléfono · Gemini + App Check</text>
+<rect x="136" y="32" width="824" height="360" fill="none" stroke="#4F4A66" stroke-width="1"/>
+<rect x="136" y="152" width="824" height="60" fill="none" stroke="#5B3CC4" stroke-width="1.4"/>
+<text x="72" y="46" fill="#7C7794" font-size="8.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.1em">UI</text>
+<path d="M 72,58 V 366" fill="none" stroke="#4F4A66" stroke-width="1.2" marker-end="url(#arrow)"/>
+<text x="72" y="386" fill="#7C7794" font-size="8.5" font-weight="400" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.1em">MODELO</text>
+</svg>
+</div>
+</body>
+</html>

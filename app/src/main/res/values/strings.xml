@@ -27,7 +27,7 @@
     <string name="example_moderate">No entregué el trabajo en equipo de la clase del profesor Ramírez en la Universidad Galileo porque se me olvidó por jugar videojuegos.</string>
     <string name="example_severe">Me quedé dormido viendo series hasta las 4 am y no llegué a la junta con mi jefa Laura en Oficinas Norte.</string>
     <string name="tone_title">Tono</string>
-    <string name="generate">✨ Generar excusa</string>
+    <string name="generate">Generar excusa</string>
     <string name="cancel">Cancelar</string>
 
     <!-- Tones -->
@@ -41,31 +41,31 @@
     <string name="tone_short_absurd">Absurdo</string>
 
     <!-- Progress messages: who is working on what -->
-    <string name="progress_anonymize">📱 Ocultando nombres en tu teléfono…</string>
-    <string name="progress_leak_check">⚙️ Verificando que nada privado se escape…</string>
-    <string name="progress_summarize">📱 Resumiendo tu historia…</string>
-    <string name="progress_severity">📱 Midiendo la gravedad del desastre…</string>
-    <string name="progress_style">📱 Eligiendo el tono perfecto…</string>
-    <string name="progress_prompt">📱 Planeando la estrategia…</string>
-    <string name="progress_generate_local">📱 Gemma está escribiendo tu leyenda…</string>
-    <string name="progress_generate_cloud">☁️ Gemini está escribiendo tu leyenda…</string>
-    <string name="progress_review">📱 Gemma revisa la excusa de Gemini…</string>
-    <string name="progress_deanonymize">⚙️ Devolviendo los nombres reales…</string>
+    <string name="progress_anonymize">Gemma oculta los nombres en tu teléfono…</string>
+    <string name="progress_leak_check">Verificando que nada privado se escape…</string>
+    <string name="progress_summarize">Gemma resume tu historia…</string>
+    <string name="progress_severity">Gemma mide la gravedad del desastre…</string>
+    <string name="progress_style">Gemma elige el tono perfecto…</string>
+    <string name="progress_prompt">Gemma planea la estrategia…</string>
+    <string name="progress_generate_local">Gemma escribe tu leyenda en el teléfono…</string>
+    <string name="progress_generate_cloud">Gemini escribe tu leyenda en la nube…</string>
+    <string name="progress_review">Gemma revisa la excusa de Gemini…</string>
+    <string name="progress_deanonymize">Devolviendo los nombres reales…</string>
 
 
 
 
 
     <!-- Result -->
-    <string name="generated_by_local">📱 Escrita en tu teléfono por Gemma</string>
-    <string name="generated_by_cloud">☁️ Escrita en la nube por Gemini</string>
+    <string name="generated_by_local">Escrita en tu teléfono por Gemma</string>
+    <string name="generated_by_cloud">Escrita en la nube por Gemini</string>
     <string name="reviewer_warning">El revisor local no quedó convencido</string>
     <string name="notice_anonymization_failed">No se pudo anonimizar tu historia: por seguridad no se envió nada a la nube.</string>
     <string name="notice_offline">Sin conexión: excusa generada en el teléfono</string>
     <string name="notice_cloud_error">La nube falló (%1$s). Se generó la excusa en el teléfono.</string>
     <string name="copy">Copiar</string>
     <string name="share">Compartir</string>
-    <string name="another">🎲 Otra excusa</string>
+    <string name="another">Otra excusa</string>
     <string name="copied">Excusa copiada</string>
     <string name="error_generic">Algo salió mal: %1$s</string>
 

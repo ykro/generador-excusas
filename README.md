@@ -15,59 +15,36 @@ El objetivo real del proyecto es demostrar la arquitectura **split brain** ("cer
 
 La interfaz está en español (`res/values/strings.xml`). El código, los prompts y los comentarios están en inglés.
 
+## Así se ve
+
+![Pantalla principal y una excusa escrita por Gemini](docs/screenshots/app.png)
+
+![Excusas escritas por Gemma: en línea (caso leve) y en modo avión](docs/screenshots/local.png)
+
 ---
 
 ## 1. Arquitectura
 
-```mermaid
-flowchart TD
-    A[Historia real del usuario] --> B[1. Anonimizar - LOCAL]
-    B --> B2{Revisión de fugas - CÓDIGO}
-    B2 -- fuga --> B3[Redactar automáticamente - CÓDIGO]
-    B3 --> C
-    B2 -- ok --> C[2. Resumir - LOCAL]
-    C --> D[3. Gravedad - LOCAL]
-    D --> E[4. Estilo - LOCAL]
-    E --> F[5. Construir prompt - LOCAL + CÓDIGO]
-    F --> G{¿Leve o sin internet?}
-    G -- sí --> H[6a. Generar excusa - LOCAL]
-    G -- no --> I[6b. Generar excusa - GEMINI]
-    I --> J[7. Revisión - LOCAL]
-    J -- rechazada, máx. 1 reintento --> I
-    J -- aprobada --> K[8. Restaurar nombres - CÓDIGO]
-    H --> K
-    K --> L[Excusa final]
-```
+![Qué corre en el teléfono y qué en la nube](docs/diagrams/split-brain.es.png)
+
+![El pipeline: cada paso tiene su cerebro](docs/diagrams/pipeline.es.png)
 
 | Paso | Cerebro | Por qué ahí |
 | --- | --- | --- |
-| 1. Anonimizar | 📱 Local | La historia real nunca debe salir del teléfono |
-| Revisión de fugas | ⚙️ Código | No se confía ciegamente en el modelo pequeño |
-| 2. Resumir | 📱 Local | Menos tokens enviados = menor costo y menor exposición |
-| 3. Gravedad | 📱 Local | Decide si vale la pena pagar la API |
-| 4. Estilo | 📱 Local | Clasificación simple, ideal para un modelo chico |
-| 5. Construir prompt | 📱 Local + ⚙️ Código | El código elige un tema al azar y llena la plantilla; el modelo sugiere la estrategia |
-| 6a. Generar (leve / sin internet) | 📱 Local | Gratis y sin conexión |
-| 6b. Generar (moderada / grave) | ☁️ Gemini | Mejor creatividad y coherencia |
-| 7. Revisión | 📱 Local (+ ⚙️ código para el límite de palabras) | Control de calidad sin costo extra |
-| 8. Restaurar nombres | ⚙️ Código | Reemplazo exacto, sin riesgo de alucinación |
+| 1. Anonimizar | Local | La historia real nunca debe salir del teléfono |
+| Revisión de fugas | Código | No se confía ciegamente en el modelo pequeño |
+| 2. Resumir | Local | Menos tokens enviados = menor costo y menor exposición |
+| 3. Gravedad | Local | Decide si vale la pena pagar la API |
+| 4. Estilo | Local | Clasificación simple, ideal para un modelo chico |
+| 5. Construir prompt | Local + código | El código elige un tema al azar y llena la plantilla; el modelo sugiere la estrategia |
+| 6a. Generar (leve / sin internet) | Local | Gratis y sin conexión |
+| 6b. Generar (moderada / grave) | Gemini (nube) | Mejor creatividad y coherencia |
+| 7. Revisión | Local (+ código para el límite de palabras) | Control de calidad sin costo extra |
+| 8. Restaurar nombres | Código | Reemplazo exacto, sin riesgo de alucinación |
 
 ### Las capas
 
-```
-UI (Compose)          ui/MainScreen.kt, ModelSetupScreen.kt, SettingsScreen.kt
-      │ StateFlow<UiState>
-ViewModel             ui/ExcuseViewModel.kt          conecta todo (inyección manual, sin Hilt)
-      │
-Orquestación          pipeline/ExcusePipeline.kt     ← EL split brain, Kotlin simple
-      │          │            │
-LocalBrain   CloudBrain   Cerebro "código"
-(Gemma)      (Gemini)     LeakDetector.kt, Deanonymizer.kt, PromptLoader.kt, JsonParsing.kt
-      │          │
-ADK for Kotlin: un LlmAgent por paso (agents/ExcuseAgents.kt), InMemoryRunner, sesión nueva por llamada
-      │          │
-LiteRT-LM     Firebase AI Logic (+ App Check)
-```
+![Las capas de la app](docs/diagrams/layers.es.png)
 
 La orquestación **no** es un agente. El orden de los pasos, el enrutamiento y los reintentos son `if`/`when` normales de Kotlin. Así la decisión sobre qué puede salir del teléfono es explícita, determinista y se puede probar.
 
@@ -90,20 +67,20 @@ val wantsCloud = when (routing) {
 val useCloud = wantsCloud && isOnline && !anonymizationFailed
 ```
 
-- `LeakDetector.check(...)` (⚙️) corre **antes** de que algo pueda llegar a la nube. Reemplaza los nombres reales que el modelo olvidó, además de correos, teléfonos y números largos.
+- `LeakDetector.check(...)` corre **antes** de que algo pueda llegar a la nube. Reemplaza los nombres reales que el modelo olvidó, además de correos, teléfonos y números largos.
 - `generateInCloud(...)` muestra a Gemini escribiendo y a Gemma revisando, con un reintento que incluye la razón del revisor.
 - Si Gemini falla (error de red, timeout, App Check o cuota), el pipeline atrapa el error y **genera con Gemma**.
-- `Deanonymizer.restore(...)` (⚙️) vuelve a poner los nombres reales **en el teléfono**, cuando la nube ya terminó.
+- `Deanonymizer.restore(...)` vuelve a poner los nombres reales **en el teléfono**, cuando la nube ya terminó.
 
 ### En la app
 
-- **Mientras trabaja**, una tarjeta de progreso dice qué cerebro está ocupado: `📱 Ocultando nombres en tu teléfono…`, `⚙️ Verificando que nada privado se escape…`, `☁️ Gemini está escribiendo tu leyenda…`, `📱 Gemma revisa la excusa de Gemini…`. Cuando Gemma escribe en el teléfono, el texto aparece en vivo.
-- **El resultado** lleva una etiqueta: `📱 Escrita en tu teléfono por Gemma` o `☁️ Escrita en la nube por Gemini`.
+- **Mientras trabaja**, una tarjeta de progreso dice qué cerebro está ocupado: `Gemma oculta los nombres en tu teléfono…`, `Verificando que nada privado se escape…`, `Gemini escribe tu leyenda en la nube…`, `Gemma revisa la excusa de Gemini…`. Cuando Gemma escribe en el teléfono, el texto aparece en vivo.
+- **El resultado** lleva una etiqueta: `Escrita en tu teléfono por Gemma` o `Escrita en la nube por Gemini`.
 - **Pruébalo:**
   - El ejemplo `Leve` se queda 100% en el teléfono.
   - El ejemplo `Grave` va a Gemini.
   - Con modo avión, `Grave` lo escribe Gemma y aparece el aviso `Sin conexión`.
-  - En ⚙️ Configuración puedes forzar el modelo local o Gemini.
+  - En Configuración puedes forzar el modelo local o Gemini.
 
 ---
 
@@ -278,11 +255,3 @@ Si el archivo ya está y tiene el tamaño correcto, la app omite la descarga.
 
 **Tip del emulador:** si el emulador muestra el Wi-Fi con un "!" y la nube siempre cae al modo local ("Sin conexión"), su DNS está roto. Arráncalo con `emulator -avd <nombre> -dns-server 8.8.8.8`.
 
-## 9. Notas y diferencias con el spec original
-
-- **ADK 1.1.0** en lugar de 1.0.0 (la versión más reciente). Sin el procesador KSP, porque no se usan tools.
-- **Temperatura en el teléfono:** ADK no le pasa `temperature` a LiteRT-LM, así que los 0.2 / 0.8 del spec no se pueden aplicar a Gemma. La variedad viene del tema al azar de `themes.txt`.
-- **Configuración de Gemini:** `gemini-3.8-flash` no acepta el nivel de thinking `MINIMAL`, así que usa `LOW` con 1024 tokens de salida.
-- **GPU vs CPU:** en el emulador, inicializar la GPU mata el proceso de forma nativa, algo que ningún `try/catch` puede detener. Por eso la app usa CPU en emuladores. En teléfonos deja un archivo marcador mientras prueba la GPU y, si la GPU tumbó la app, usa CPU en el siguiente arranque. El backend activo se muestra en Configuración.
-- **Simplificaciones:** la configuración vive en memoria (sin DataStore), la descarga es una corrutina simple (sin WorkManager) y la navegación es un `when` (sin librería de navegación).
-- **UI:** la línea de tiempo técnica y el panel "¿Qué vio la nube?" del spec se dejaron fuera para mantener la interfaz simple. El pipeline igual reporta cada paso (cerebro, estado, duración, salida) al ViewModel, y las pruebas unitarias verifican qué se envía a la nube.
