@@ -48,6 +48,22 @@ UI text is in Spanish (`res/values/strings.xml`). Code, prompts and docs are in 
 
 The orchestration is **not** an agent. The order of the steps, the routing and the retries are ordinary `if`/`when` in Kotlin, so the decision about what may leave the phone stays explicit, deterministic and testable.
 
+### Heuristics: when a rule is enough
+
+Not everything local is a model. These rules do work that a model would do worse, slower or without guarantees. Split brain is not only about privacy: it is also deciding what does not need a model at all.
+
+| Rule | Where | What it solves |
+| --- | --- | --- |
+| If the story has fewer than 60 words, it is not summarized | `ExcusePipeline.kt` | One less Gemma call: less waiting, nothing lost |
+| Minor, offline or failed anonymization: Gemma writes | `ExcusePipeline.kt` | What leaves the phone and when paying for the API is worth it |
+| Regex for e-mails, phone numbers and long numbers | `LeakDetector.kt` | Data with a recognizable shape, without relying on the model |
+| More than 120 words: excuse rejected | `ExcusePipeline.kt` | Small models can't count words |
+| Random theme, never the same as last time | `ExcusePipeline.kt`, `themes.txt` | Variety, because temperature never reaches Gemma |
+| Invalid JSON: one retry, then a default value | `ExcusePipeline.kt`, `JsonParsing.kt` | A malformed answer doesn't break the pipeline |
+| Emulator, or a GPU that crashed the app before: CPU is used | `GemmaLocalBrain.kt` | Avoids a native crash no `try/catch` can catch |
+| Network not validated by Android: Gemini isn't even tried | `Connectivity.kt` | No waiting for a timeout when there is no real internet |
+| Unknown placeholder at the end: a generic word ("alguien") | `Deanonymizer.kt` | The user never sees a `[PERSON_3]` |
+
 ---
 
 ## 2. Where you can see the split brain
@@ -169,6 +185,34 @@ Notice that the local call and the cloud call look the same: **same ADK agent AP
 - **Never leaves the phone:** the original story and the placeholder → real value map. They live only in memory: they are never written to disk and never logged.
 - **When nothing is sent:** if anonymization fails, the pipeline refuses to call the cloud and generates locally.
 - **Unit tests enforce this:** `severeStoryGoesToGeminiWithoutRealNames`, `failedAnonymizationNeverReachesTheCloud` and `leakIsFixedByCodeBeforeLeavingThePhone`.
+
+### The leak detector
+
+The small model makes mistakes, so its anonymization is never accepted without checking it. [`LeakDetector.kt`](app/src/main/java/com/example/legendaryexcuse/pipeline/LeakDetector.kt) is plain code, no model, and runs after Gemma anonymizes and **before** any text can leave the phone. It does two checks:
+
+1. **Real values Gemma forgot to replace.** It uses the same map Gemma returned: if a real value is still in the text, it swaps it for its placeholder. The typical case is a name that appears twice and the model replaced only one:
+
+   ```text
+   Gemma returns:      "No llegué a la junta con mi jefa Laura en [PLACE_1]"
+                       map: [PERSON_1] → Laura, [PLACE_1] → Oficinas Norte
+   The detector sends: "No llegué a la junta con mi jefa [PERSON_1] en [PLACE_1]"
+   ```
+
+2. **Data with a recognizable shape.** These don't depend on the model: they are found with regular expressions.
+
+   ```kotlin
+   private val patterns = listOf(
+     Regex("""[\w.+-]+@[\w-]+\.[\w.]+"""), // e-mail
+     Regex("""\+?\d[\d\s-]{6,}\d"""), // phone number
+     Regex("""\d{6,}"""), // long number (ids, accounts)
+   )
+   ```
+
+   Each match is replaced by a new placeholder (`[DATA_1]`, `[DATA_2]`) that is added to the map, so it is restored at the end too.
+
+If the detector changed anything, the step is marked as fixed by code. The test `leakIsFixedByCodeBeforeLeavingThePhone` simulates exactly the slip in the example.
+
+**Its limit:** the detector only finds what it already knows to look for. If Gemma never recognizes "Laura" as a person, "Laura" never enters the map and no regex catches it, because a name has no recognizable shape the way an e-mail does. The detector **reduces** the risk, it does not remove it. That is why there are several layers: the model detects, the code verifies, and the cloud only receives the anonymized version, summarized when it is long.
 
 ## 6. Prompts
 

@@ -48,6 +48,22 @@ La interfaz está en español (`res/values/strings.xml`). El código, los prompt
 
 La orquestación **no** es un agente. El orden de los pasos, el enrutamiento y los reintentos son `if`/`when` normales de Kotlin. Así la decisión sobre qué puede salir del teléfono es explícita, determinista y se puede probar.
 
+### Heurísticas: cuando una regla basta
+
+No todo lo local es un modelo. Estas reglas hacen trabajo que un modelo haría peor, más lento o sin garantías. El split brain no es solo privacidad: también es decidir qué no necesita un modelo en absoluto.
+
+| Regla | Dónde | Qué resuelve |
+| --- | --- | --- |
+| Si la historia tiene menos de 60 palabras, no se resume | `ExcusePipeline.kt` | Una llamada menos a Gemma: menos espera, sin perder nada |
+| Leve, sin internet o anonimización fallida: escribe Gemma | `ExcusePipeline.kt` | Qué sale del teléfono y cuándo vale la pena pagar la API |
+| Regex de correos, teléfonos y números largos | `LeakDetector.kt` | Datos con forma reconocible, sin depender del modelo |
+| Más de 120 palabras: excusa rechazada | `ExcusePipeline.kt` | Los modelos pequeños no saben contar palabras |
+| Tema al azar, nunca el mismo que la vez anterior | `ExcusePipeline.kt`, `themes.txt` | Variedad, porque la temperatura no llega a Gemma |
+| JSON inválido: un reintento y luego un valor por defecto | `ExcusePipeline.kt`, `JsonParsing.kt` | Una respuesta mal formada no rompe el pipeline |
+| Emulador, o GPU que tumbó la app antes: se usa CPU | `GemmaLocalBrain.kt` | Evita un crash nativo que ningún `try/catch` atrapa |
+| Red no validada por Android: ni se intenta Gemini | `Connectivity.kt` | No se espera un timeout cuando no hay internet real |
+| Marcador desconocido al final: se usa un genérico ("alguien") | `Deanonymizer.kt` | Nunca se le muestra un `[PERSON_3]` al usuario |
+
 ---
 
 ## 2. Dónde se ve el split brain
@@ -169,6 +185,34 @@ Fíjate que la llamada local y la llamada a la nube se ven iguales: **misma API 
 - **Nunca sale del teléfono:** la historia original y el mapa marcador → valor real. Viven solo en memoria: nunca se escriben en disco ni en logs.
 - **Cuando no se envía nada:** si la anonimización falla, el pipeline se niega a llamar a la nube y genera en el teléfono.
 - **Las pruebas unitarias lo verifican:** `severeStoryGoesToGeminiWithoutRealNames`, `failedAnonymizationNeverReachesTheCloud` y `leakIsFixedByCodeBeforeLeavingThePhone`.
+
+### El detector de fugas
+
+El modelo pequeño se equivoca, así que su anonimización no se da por buena sin revisarla. [`LeakDetector.kt`](app/src/main/java/com/example/legendaryexcuse/pipeline/LeakDetector.kt) es código normal, sin modelo, y corre después de que Gemma anonimiza y **antes** de que cualquier texto pueda salir del teléfono. Hace dos revisiones:
+
+1. **Valores reales que Gemma olvidó reemplazar.** Usa el mismo mapa que devolvió Gemma: si un valor real sigue en el texto, lo cambia por su marcador. Es el caso típico de un nombre que aparece dos veces y el modelo solo reemplazó una:
+
+   ```text
+   Gemma devuelve:    "No llegué a la junta con mi jefa Laura en [PLACE_1]"
+                      mapa: [PERSON_1] → Laura, [PLACE_1] → Oficinas Norte
+   El detector deja:  "No llegué a la junta con mi jefa [PERSON_1] en [PLACE_1]"
+   ```
+
+2. **Datos con forma reconocible.** No dependen del modelo: se buscan con expresiones regulares.
+
+   ```kotlin
+   private val patterns = listOf(
+     Regex("""[\w.+-]+@[\w-]+\.[\w.]+"""), // e-mail
+     Regex("""\+?\d[\d\s-]{6,}\d"""), // phone number
+     Regex("""\d{6,}"""), // long number (ids, accounts)
+   )
+   ```
+
+   Cada coincidencia se reemplaza por un marcador nuevo (`[DATA_1]`, `[DATA_2]`) que se agrega al mapa, así que al final también se restaura.
+
+Si el detector cambió algo, el paso queda marcado como corregido por código. La prueba `leakIsFixedByCodeBeforeLeavingThePhone` simula exactamente el olvido del ejemplo.
+
+**Su límite:** el detector solo encuentra lo que ya sabe buscar. Si Gemma nunca reconoce a "Laura" como persona, "Laura" no entra al mapa y ninguna regex la atrapa, porque un nombre no tiene una forma reconocible como un correo. El detector **reduce** el riesgo, no lo elimina. Por eso hay varias capas: el modelo detecta, el código verifica y a la nube solo llega la versión anonimizada, resumida si es larga.
 
 ## 6. Prompts
 
