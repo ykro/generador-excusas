@@ -12,8 +12,23 @@ El objetivo real del proyecto es demostrar la arquitectura **split brain** ("cer
 | **Costo** | Los casos leves se resuelven en el teléfono, sin llamar a la API. |
 | **Calidad** | Gemini escribe la excusa creativa cuando vale la pena, y el modelo local la revisa. |
 | **Disponibilidad** | Sin internet la app sigue funcionando, solo con el modelo local. |
+| **Latencia** | Lo que se resuelve con una regla no espera a ningún modelo, y sin internet real ni se intenta llamar a Gemini. |
 
 La interfaz está en español (`res/values/strings.xml`). El código, los prompts y los comentarios están en inglés.
+
+## Split brain en pocas palabras
+
+**Qué es.** Una app con IA reparte el trabajo entre un modelo en el dispositivo y uno en la nube, cada uno en lo que hace mejor, y deja en código lo que no admite errores. En sistemas distribuidos, *split brain* es otra cosa (un clúster que se parte en dos y cuyas mitades toman decisiones contradictorias); aquí se usa en el sentido de las apps con IA.
+
+**Cómo decidir qué va dónde.** Para cada paso, tres preguntas, en este orden:
+
+1. **¿Se puede resolver con una regla?** Contar, comparar, buscar un patrón o decidir con datos que ya tienes. Entonces es código: gratis, instantáneo y se prueba con certeza.
+2. **¿Toca datos sensibles, o es clasificar, extraer o revisar?** Entonces el modelo local. Son tareas cortas y enfocadas, justo donde un modelo pequeño rinde.
+3. **¿Necesita creatividad, conocimiento amplio o razonamiento largo?** Entonces la nube, con el modelo local como respaldo cuando no hay conexión o la llamada falla.
+
+La decisión de qué datos cruzan a la nube vive en código, con pruebas.
+
+**Cuándo no conviene.** El modelo local es una descarga de 2.6 GB y necesita memoria; sin GPU corre en CPU y es lento; dos modelos son dos formas de fallar, con su fallback y sus pruebas; y no todos los teléfonos pueden correrlo. Si tus datos no son sensibles, tu app siempre tiene conexión y el costo de la API no te preocupa, probablemente un solo modelo en la nube te alcance.
 
 ## Así se ve
 
@@ -77,7 +92,7 @@ Todo pasa en [`ExcusePipeline.kt`](app/src/main/java/com/example/legendaryexcuse
 val wantsCloud = when (routing) {
   RoutingMode.FORCE_LOCAL -> false
   RoutingMode.FORCE_CLOUD -> true
-  RoutingMode.AUTO -> analysis.severity != Severity.MINOR   // Gemma decide si vale la pena pagar Gemini
+  RoutingMode.AUTO -> analysis.severity != Severity.MINOR   // Gemma clasifica la gravedad; el código decide la ruta
 }
 // Nunca se envía nada a la nube si falló la anonimización, y no se intenta sin internet.
 val useCloud = wantsCloud && isOnline && !anonymizationFailed
@@ -185,6 +200,33 @@ Fíjate que la llamada local y la llamada a la nube se ven iguales: **misma API 
 - **Nunca sale del teléfono:** la historia original y el mapa marcador → valor real. Viven solo en memoria: nunca se escriben en disco ni en logs.
 - **Cuando no se envía nada:** si la anonimización falla, el pipeline se niega a llamar a la nube y genera en el teléfono.
 - **Las pruebas unitarias lo verifican:** `severeStoryGoesToGeminiWithoutRealNames`, `failedAnonymizationNeverReachesTheCloud` y `leakIsFixedByCodeBeforeLeavingThePhone`.
+
+### Ejemplo: lo que recibe Gemini
+
+Con la historia grave, esto es lo que escribe la persona. Nunca sale del teléfono:
+
+```text
+Me quedé dormido viendo series hasta las 4 am y no llegué a la junta con mi jefa Laura en Oficinas Norte.
+```
+
+Y esto es lo que recibe Gemini. La historia es corta, así que no se resume: la situación es la historia anonimizada. La estrategia la escribe Gemma y el tema lo elige el código al azar, así que esas dos líneas cambian en cada corrida:
+
+```text
+You are the world's greatest expert in legendary excuses.
+Write ONE epic excuse in Spanish for the following situation.
+
+Situation (the embarrassing truth, NEVER reveal it): Me quedé dormido viendo series hasta las 4 am y no llegué a la junta con mi jefa [PERSON_1] en [PLACE_1].
+Context: work
+Severity: severe
+Tone: formal
+Suggested approach: Present the absence as the result of rescuing a stranger in danger on the way to the meeting.
+Theme of the invented story: a heroic rescue of a stranger or an animal
+
+Rules:
+[... las reglas fijas de la plantilla ...]
+```
+
+El mapa que dice que `[PERSON_1]` es Laura se queda en el teléfono.
 
 ### El detector de fugas
 

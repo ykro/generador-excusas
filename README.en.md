@@ -12,8 +12,23 @@ The real goal of the project is to show the **split brain** architecture: a **sm
 | **Cost** | Minor situations are solved on-device, without calling the API. |
 | **Quality** | Gemini writes the creative excuse when it is worth it, and the local model reviews it. |
 | **Availability** | Without internet the app still works, using only the local model. |
+| **Latency** | Whatever a rule can solve waits for no model, and without real internet the app doesn't even try to call Gemini. |
 
 UI text is in Spanish (`res/values/strings.xml`). Code, prompts and docs are in English.
+
+## Split brain in a nutshell
+
+**What it is.** An AI app splits the work between a model on the device and one in the cloud, each doing what it does best, and leaves to code whatever can't afford mistakes. In distributed systems, *split brain* means something else (a cluster that splits in two, with each half making contradictory decisions); here it is used in the AI-apps sense.
+
+**How to decide what goes where.** For each step, three questions, in this order:
+
+1. **Can a rule solve it?** Counting, comparing, matching a pattern or deciding with data you already have. Then it's code: free, instant and testable with certainty.
+2. **Does it touch sensitive data, or is it classifying, extracting or reviewing?** Then the local model. These are short, focused tasks, exactly where a small model does well.
+3. **Does it need creativity, broad knowledge or long reasoning?** Then the cloud, with the local model as a fallback when there is no connection or the call fails.
+
+The decision about which data crosses to the cloud lives in code, with tests.
+
+**When it doesn't pay off.** The local model is a 2.6 GB download and needs memory; without a GPU it runs on the CPU and is slow; two models are two ways to fail, each with its fallback and tests; and not every phone can run it. If your data isn't sensitive, your app is always online and API cost doesn't worry you, a single cloud model is probably enough.
 
 ## What it looks like
 
@@ -77,7 +92,7 @@ Everything happens in [`ExcusePipeline.kt`](app/src/main/java/com/example/legend
 val wantsCloud = when (routing) {
   RoutingMode.FORCE_LOCAL -> false
   RoutingMode.FORCE_CLOUD -> true
-  RoutingMode.AUTO -> analysis.severity != Severity.MINOR   // Gemma decides if Gemini is worth paying for
+  RoutingMode.AUTO -> analysis.severity != Severity.MINOR   // Gemma classifies severity; code decides the route
 }
 // Never send anything to the cloud if anonymization failed, and don't try without internet.
 val useCloud = wantsCloud && isOnline && !anonymizationFailed
@@ -185,6 +200,33 @@ Notice that the local call and the cloud call look the same: **same ADK agent AP
 - **Never leaves the phone:** the original story and the placeholder → real value map. They live only in memory: they are never written to disk and never logged.
 - **When nothing is sent:** if anonymization fails, the pipeline refuses to call the cloud and generates locally.
 - **Unit tests enforce this:** `severeStoryGoesToGeminiWithoutRealNames`, `failedAnonymizationNeverReachesTheCloud` and `leakIsFixedByCodeBeforeLeavingThePhone`.
+
+### Example: what Gemini receives
+
+With the severe story, this is what the person writes. It never leaves the phone:
+
+```text
+Me quedé dormido viendo series hasta las 4 am y no llegué a la junta con mi jefa Laura en Oficinas Norte.
+```
+
+And this is what Gemini receives. The story is short, so it is not summarized: the situation is the anonymized story. Gemma writes the approach and code picks the theme at random, so those two lines change on every run:
+
+```text
+You are the world's greatest expert in legendary excuses.
+Write ONE epic excuse in Spanish for the following situation.
+
+Situation (the embarrassing truth, NEVER reveal it): Me quedé dormido viendo series hasta las 4 am y no llegué a la junta con mi jefa [PERSON_1] en [PLACE_1].
+Context: work
+Severity: severe
+Tone: formal
+Suggested approach: Present the absence as the result of rescuing a stranger in danger on the way to the meeting.
+Theme of the invented story: a heroic rescue of a stranger or an animal
+
+Rules:
+[... the template's fixed rules ...]
+```
+
+The map that says `[PERSON_1]` is Laura stays on the phone.
 
 ### The leak detector
 
